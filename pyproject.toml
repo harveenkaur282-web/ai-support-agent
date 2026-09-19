@@ -7,7 +7,12 @@ authors = [
     { name = "Harveen Kaur", email = "harveenkaur282@gmail.com" }
 ]
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "bedrock-agentcore>=1.23.1",
+    "bedrock-agentcore-starter-toolkit>=0.3.13",
+    "strands-agents>=1.56.0",
+    "strands-agents-tools>=0.8.9",
+]
 
 [project.scripts]
 ai-support-agent = "ai_support_agent:main"
