@@ -1,4 +1,4 @@
-# AI-SUPPORT-AGENT
+# Project: Building a Production-Grade Customer Support AI Agent with Amazon Bedrock AgentCore
 
 Building a fully functional AI customer support agent using Amazon Bedrock AgentCore and the Strands SDK. 
 It will serve as an intelligent interface between customers and an e-commerce platform that handles multi-turn conversations while maintaining context across sessions. 
