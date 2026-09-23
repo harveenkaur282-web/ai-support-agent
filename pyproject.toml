@@ -10,8 +10,14 @@ requires-python = ">=3.14"
 dependencies = [
     "bedrock-agentcore>=1.23.1",
     "bedrock-agentcore-starter-toolkit>=0.3.13",
+    "boto3",
+    "chardet>=6.0.0.post1",
+    "nest-asyncio>=1.6.0",
+    "playwright>=1.58.0",
+    "PyYAML",
     "strands-agents>=1.56.0",
     "strands-agents-tools>=0.8.9",
+    "urllib3>=2.6.3",
 ]
 
 [project.scripts]
