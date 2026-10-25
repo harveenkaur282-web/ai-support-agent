@@ -276,8 +276,9 @@ def calculate_loyalty_discount(
         product_category: Order product category: "standard", "device", or "fresh" (default "standard")
 
     Returns:
-        JSON string containing points_redeemed, points_discount_usd, tier_discount_percent,
-        tier_discount_usd, total_savings_usd, final_total_usd, points_earned, remaining_points.
+        JSON string containing points_redeemed, points_discount_usd, tier_discount_percent
+        (also tier_discount_pct), tier_discount_usd, total_savings_usd, final_total_usd
+        (also final_total), points_earned, remaining_points.
     """
     code = f"""
 import json
@@ -314,9 +315,11 @@ result = {{
     "points_discount_usd": points_discount,
     "tier": tier,
     "tier_discount_percent": int(tier_rate * 100),
+    "tier_discount_pct": int(tier_rate * 100),
     "tier_discount_usd": tier_discount,
     "total_savings_usd": total_savings,
     "final_total_usd": final_total,
+    "final_total": final_total,
     "points_earned": points_earned,
     "remaining_points": remaining_points
 }}
@@ -378,9 +381,11 @@ print(json.dumps(result))
             "points_discount_usd": points_discount,
             "tier": tier,
             "tier_discount_percent": int(tier_rate * 100),
+            "tier_discount_pct": int(tier_rate * 100),
             "tier_discount_usd": tier_discount,
             "total_savings_usd": total_savings,
             "final_total_usd": final_total,
+            "final_total": final_total,
             "points_earned": points_earned,
             "remaining_points": remaining_points,
             "note": "Exact loyalty calculation applied."
