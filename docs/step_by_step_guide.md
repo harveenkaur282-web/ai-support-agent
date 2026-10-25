@@ -64,3 +64,27 @@ This document records each step taken, rationale, and instructions for reproduci
   - `customer_facts` (`SEMANTIC`) -> `cs_agent/{actorId}/facts`
   - `customer_preferences` (`USER_PREFERENCE`) -> `cs_agent/{actorId}/preferences`
 - **Status**: Active
+
+---
+
+## Step 8: Configure AgentCore Deployment (Completed)
+- **Command run**:
+  ```bash
+  uv run agentcore configure \
+    --entrypoint main.py \
+    --name customer_support_agent \
+    --deployment-type direct_code_deploy \
+    --runtime PYTHON_3_13 \
+    --disable-memory
+  ```
+- **Config file created**: `.bedrock_agentcore.yaml` (project root)
+- **Agent Name**: `customer_support_agent`
+- **Deployment Type**: `direct_code_deploy` (Python 3.13 runtime)
+- **Region**: `us-east-1`
+- **Account**: `824508926583`
+- **Memory**: Disabled (`--disable-memory` — agent uses the memory resource created in Step 7)
+- **Execution Role**: Auto-create at deploy time
+- **S3 Bucket**: Auto-create at deploy time
+- **Authorization**: IAM (default)
+- **Network**: Public
+- **Note**: The `--disable-memory` flag only disables automatic memory creation. The agent uses the `CustomerSupportMemory` resource created during Step 7.
