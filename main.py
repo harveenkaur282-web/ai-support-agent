@@ -282,8 +282,30 @@ def search_knowledge_base(query: str) -> str:
     Returns:
         Relevant information retrieved from the knowledge base
     """
-    # TODO: Implement the Knowledge Base search
-    pass
+    if not KB_ID:
+        return "Knowledge base not configured."
+
+    try:
+        resp = _bedrock_runtime.retrieve(
+            knowledgeBaseId=KB_ID,
+            retrievalQuery={"text": query},
+        )
+        results = resp.get("retrievalResults", [])
+        if not results:
+            return "No relevant information found in the knowledge base."
+
+        chunks = []
+        for r in results:
+            content = r.get("content", {})
+            text = content.get("text", "")
+            if text:
+                chunks.append(text)
+
+        return "\n---\n".join(chunks) if chunks else "No relevant information found in the knowledge base."
+    except Exception as e:
+        logger.error(f"Error querying knowledge base: {e}")
+        return f"Error querying knowledge base: {e}"
+
 
 
 # ── TODO 7 — Loyalty Discount Tool (Code Interpreter) ────────────────────────
