@@ -10,7 +10,7 @@ The agent serves as an intelligent interface between customers and an e-commerce
 
 ---
 
-## IEnvironment Setup
+## Environment Setup
 
 Aws setup configured in **`us-east-1`** using the provided Udacity sandbox account:
 
