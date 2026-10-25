@@ -6,7 +6,7 @@ readme = "README.md"
 authors = [
     { name = "Harveen Kaur", email = "harveenkaur282@gmail.com" }
 ]
-requires-python = ">=3.14"
+requires-python = ">=3.12,<3.14"
 dependencies = [
     "bedrock-agentcore>=1.23.1",
     "bedrock-agentcore-starter-toolkit>=0.3.13",
