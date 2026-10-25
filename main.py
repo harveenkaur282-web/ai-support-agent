@@ -108,8 +108,14 @@ _bedrock_runtime = boto3.client("bedrock-agent-runtime", region_name=REGION)
 
 def get_namespaces(mem_client: MemoryClient, memory_id: str) -> Dict:
     """Return a dict mapping strategy type → namespace template string."""
-    # TODO: Implement this function
-    pass
+    strategies = mem_client.get_memory_strategies(memory_id=memory_id)
+    namespaces = {}
+    for s in strategies:
+        strategy_type = s.get("type") or s.get("strategyType")
+        ns = s.get("namespaceTemplates", [None])[0] or s.get("namespaces", [None])[0]
+        if strategy_type and ns:
+            namespaces[strategy_type] = ns
+    return namespaces
 
 
 # ── TODO 5 — Memory Hook ──────────────────────────────────────────────────────

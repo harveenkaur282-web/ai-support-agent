@@ -104,3 +104,20 @@ uv run agentcore deploy
 ```
 The agent runtime deployed cleanly to account `057616154556`.
 
+---
+
+## Challenge 7: AgentCore Memory Strategy Schema Key Mismatch (`type` vs `strategyType`)
+
+**When:** Implementing `get_namespaces` in `main.py` (TODO 4)  
+**Problem:** Attempting to read `s["strategyType"]` resulted in a `KeyError` or returned `None`.  
+**Root Cause:** The `MemoryClient.get_memory_strategies()` API dictionary in Bedrock AgentCore returns the strategy type under the key `'type'` (e.g. `'SEMANTIC'`, `'USER_PREFERENCE'`), not `'strategyType'`.  
+**Fix:** Handled both key variations gracefully using fallback lookup:
+```python
+strategy_type = s.get("type") or s.get("strategyType")
+```
+This correctly resolves the namespace mapping:
+```python
+{'SEMANTIC': 'cs_agent/{actorId}/facts', 'USER_PREFERENCE': 'cs_agent/{actorId}/preferences'}
+```
+
+
