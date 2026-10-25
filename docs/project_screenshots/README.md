@@ -20,3 +20,14 @@ Validation of tool calling via AgentCore Gateway and the `order-tracker` Lambda 
 
 ![Test 1 — Order Tracking](02_test1_order_tracking.png)
 
+---
+
+### 3. Test 2 — Refund Processing
+Validation of refund initiation via AgentCore Gateway and the `refund-processor` Lambda tool:
+- **Prompt**: `"I want to return my Kindle Paperwhite (ORD-002). Please initiate a refund."`
+- **Customer ID**: `CUST-123`
+- **Outcome**: The agent successfully processed the return for `ORD-002`, approved a refund of `$139.99` back to the customer's payment method, generated refund confirmation ID `REF-BSSB2QTJ`, and offered a prepaid return shipping label.
+
+![Test 2 — Refund Processing](03_test2_refund_processing.png)
+
+
