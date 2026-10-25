@@ -30,4 +30,19 @@ Validation of refund initiation via AgentCore Gateway and the `refund-processor`
 
 ![Test 2 — Refund Processing](03_test2_refund_processing.png)
 
+---
+
+### 4. Test 3 — Knowledge Base (RAG)
+Validation of RAG search using the `search_knowledge_base` tool connected to Amazon Bedrock Knowledge Base:
+- **Prompt**: `"What are the benefits of the Platinum loyalty tier?"`
+- **Customer ID**: `CUST-123`
+- **Outcome**: The agent retrieved exact policy definitions from `product_catalog.txt` via OpenSearch Serverless:
+  - **Free same-day shipping** on eligible items
+  - **15% discount** on purchases (compared to 10% for Gold)
+  - **Priority customer support** with dedicated assistance
+  - Tier threshold: 5,000+ points
+
+![Test 3 — Knowledge Base (RAG)](04_test3_knowledge_base_rag.png)
+
+
 
