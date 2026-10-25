@@ -37,6 +37,25 @@ from bedrock_agentcore.tools.code_interpreter_client import code_session
 from strands_tools.browser import AgentCoreBrowser
 
 
+def _fix_playwright_node():
+    """Deploy zip is built on Windows so playwright's bundled node loses its exec bit.
+    Copy it to /tmp (writable), chmod it, and point Playwright at the copy."""
+    try:
+        import shutil, stat, playwright
+        src = os.path.join(os.path.dirname(playwright.__file__), "driver", "node")
+        if os.path.exists(src) and not os.access(src, os.X_OK):
+            dst = "/tmp/playwright_node"
+            if not os.path.exists(dst):
+                shutil.copyfile(src, dst)
+                os.chmod(dst, os.stat(dst).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+            os.environ["PLAYWRIGHT_NODEJS_PATH"] = dst
+    except Exception as e:
+        print(f"playwright node fix skipped: {e}")
+
+
+_fix_playwright_node()
+
+
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger("CSAI_Agent")
 
@@ -478,7 +497,15 @@ You have access to several specialized tools:
 2. `calculate_loyalty_discount`: Use to compute loyalty point redemption, tier discounts, point balances, and order totals.
    MANDATORY: When a customer asks to calculate their discount, loyalty points, or order total, you MUST NOT perform any calculations yourself. You MUST invoke `calculate_loyalty_discount(loyalty_points=..., tier=..., order_total=...)`. You must strictly report the exact numbers returned by the tool (Points Redeemed, Points Discount, Tier Discount, Final Total, and Remaining Points).
 3. Gateway MCP Tools: Use to track order statuses (order-tracker) and process customer refund requests (refund-processor).
-4. `browser`: Use to perform visual checks or retrieve web-based support information.
+4. `browser`: Use to interact with websites and perform browser automation tasks.
+   IMPORTANT: The `browser` tool requires inputs in the format `browser_input={"action": {...}}`.
+   To visit a website and get its title:
+   Step 1: Initialize session:
+     `browser(browser_input={"action": {"type": "init_session", "session_name": "browser-session-1", "description": "visit page"}})`
+   Step 2: Navigate to URL:
+     `browser(browser_input={"action": {"type": "navigate", "session_name": "browser-session-1", "url": "<url>"}})`
+   Step 3: Retrieve page title:
+     `browser(browser_input={"action": {"type": "evaluate", "session_name": "browser-session-1", "script": "document.title"}})`
 
 Always provide concise, empathetic, and accurate responses. When memory context is provided in the prompt, leverage it seamlessly to personalize the conversation without redundantly repeating the raw context block.
 """

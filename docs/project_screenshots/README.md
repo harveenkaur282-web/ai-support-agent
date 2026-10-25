@@ -79,3 +79,11 @@ Validation of dynamic arithmetic execution via Bedrock AgentCore Code Interprete
 
 ![Test 5 — Loyalty Discount Calculation](test5_loyalty_discount.png)
 
+
+
+### Test 6 - Browser Tool
+- **Prompt**: "Go to https://www.udacity.com and tell me the page title."
+- **Customer ID**: `CUST-123`
+- **Outcome**: The agent used the browser tool on the live site and returned the title **"Learn the Latest Tech Skills; Advance Your Career | Udacity"**.
+
+![Test 6 - Browser Tool](test6_browser_tool.png)
