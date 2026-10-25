@@ -109,9 +109,9 @@ See [docs/environment_screenshots/README.md](docs/environment_screenshots/README
 
 ---
 
-## Project Verification Screenshots
+## Project Screenshots- 6 TESTS IMPLEMENTED
 
-Visual verification of the deployed agent runtime and live functional query testing are documented in the [Project Screenshots](docs/project_screenshots/README.md) gallery:
+[Project Screenshots](docs/project_screenshots/README.md):
 
 - **Bedrock AgentCore Deployment Success** (Live runtime deployed)
 - **Functional Tests & Tool Verification** (Order tracking, KB retrieval, loyalty calculation, and memory)
