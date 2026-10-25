@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Bedrock AgentCore build artifacts
+.bedrock_agentcore/
+

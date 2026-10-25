@@ -11,14 +11,14 @@ agents:
     container_runtime: null
     source_path: C:\Users\harve\OneDrive\docs\GitHub\ai-support-agent
     aws:
-      execution_role: null
-      execution_role_auto_create: true
-      account: '824508926583'
+      execution_role: arn:aws:iam::057616154556:role/AmazonBedrockAgentCoreSDKRuntime-us-east-1-aa96c3a063
+      execution_role_auto_create: false
+      account: '057616154556'
       region: us-east-1
       ecr_repository: null
       ecr_auto_create: false
-      s3_path: null
-      s3_auto_create: true
+      s3_path: s3://bedrock-agentcore-codebuild-sources-057616154556-us-east-1
+      s3_auto_create: false
       network_configuration:
         network_mode: PUBLIC
         network_mode_config: null
@@ -30,8 +30,8 @@ agents:
         idle_runtime_session_timeout: null
         max_lifetime: null
     bedrock_agentcore:
-      agent_id: null
-      agent_arn: null
+      agent_id: customer_support_agent-zf9262EdhB
+      agent_arn: arn:aws:bedrock-agentcore:us-east-1:057616154556:runtime/customer_support_agent-zf9262EdhB
       agent_session_id: null
     codebuild:
       project_name: null

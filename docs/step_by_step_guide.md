@@ -81,10 +81,23 @@ This document records each step taken, rationale, and instructions for reproduci
 - **Agent Name**: `customer_support_agent`
 - **Deployment Type**: `direct_code_deploy` (Python 3.13 runtime)
 - **Region**: `us-east-1`
-- **Account**: `824508926583`
+- **Account**: `057616154556` (Udacity Sandbox)
 - **Memory**: Disabled (`--disable-memory` — agent uses the memory resource created in Step 7)
-- **Execution Role**: Auto-create at deploy time
-- **S3 Bucket**: Auto-create at deploy time
+- **Execution Role**: Auto-created (`arn:aws:iam::057616154556:role/AmazonBedrockAgentCoreSDKRuntime-us-east-1-aa96c3a063`)
+- **S3 Bucket**: Auto-created (`s3://bedrock-agentcore-codebuild-sources-057616154556-us-east-1`)
 - **Authorization**: IAM (default)
 - **Network**: Public
 - **Note**: The `--disable-memory` flag only disables automatic memory creation. The agent uses the `CustomerSupportMemory` resource created during Step 7.
+
+---
+
+## Step 9: Deploy Agent to Bedrock AgentCore Runtime (Completed)
+- **Command run**:
+  ```bash
+  uv run agentcore deploy
+  ```
+- **Deployment Status**: Success (`direct_code_deploy`)
+- **Agent ARN**: `arn:aws:bedrock-agentcore:us-east-1:057616154556:runtime/customer_support_agent-zf9262EdhB`
+- **CloudWatch Logs**: `/aws/bedrock-agentcore/runtimes/customer_support_agent-zf9262EdhB-DEFAULT`
+- **GenAI Observability Dashboard**: `https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#gen-ai-observability/agent-core`
+

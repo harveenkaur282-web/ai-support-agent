@@ -26,3 +26,10 @@ ai-support-agent = "ai_support_agent:main"
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.uv]
+# pywin32 is a transitive dep of uvicorn on Windows; exclude it on non-Windows platforms
+# so that Linux ARM64 cross-compilation during `agentcore deploy` succeeds.
+override-dependencies = [
+    "pywin32; sys_platform == 'win32'",
+]
