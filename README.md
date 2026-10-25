@@ -96,7 +96,6 @@ python main.py '{"prompt": "Track my order ORD-001", "customer_id": "CUST-123"}'
 | `GATEWAY_URL` | AgentCore Gateway MCP endpoint |
 | `KNOWLEDGE_BASE_ID` | Bedrock Knowledge Base ID |
 
-> **Security**: `.env` is git-ignored. Never commit credentials.
 
 ## Verification Checks
 
