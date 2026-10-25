@@ -83,13 +83,13 @@ MEMORY_ID   = "CustomerSupportMemory-E2T0yi7ZzC"
 model_id = "global.amazon.nova-2-lite-v1:0"
 
 # TODO: Create the BedrockModel instance
-model = None  # Replace this line
+model = BedrockModel(model_id = model_id)
 
 # TODO: Create the MemoryClient instance
-memory_client = None  # Replace this line
+memory_client = MemoryClient(region_name=REGION)
 
 # TODO: Create the boto3 bedrock-agent-runtime client
-_bedrock_runtime = None  # Replace this line
+_bedrock_runtime = boto3.client("bedrock-agent-runtime", region_name=REGION)
 
 
 # ── TODO 4 — Namespace Helper ─────────────────────────────────────────────────
