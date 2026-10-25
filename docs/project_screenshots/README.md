@@ -4,35 +4,35 @@ Here are screenshots of the agent deployment, functional query execution, tool u
 
 ---
 
-### 1. Bedrock AgentCore Deployment Success
+### Bedrock AgentCore Deployment Success
 Visual confirmation of successful packaging, S3 staging, IAM role binding, and runtime deployment to Amazon Bedrock AgentCore (`customer_support_agent-zf9262EdhB`).
 
-![AgentCore Deploy Success](01_agentcore_deploy_success.png)
-![AgentCore Deploy Success Part 2](01_agentcore_deploy_success_part2.png)
+![AgentCore Deploy Success](agentcore_deploy_success.png)
+![AgentCore Deploy Success Part 2](agentcore_deploy_success_part2.png)
 
 ---
 
-### 2. Test 1 — Order Tracking
+### Test 1 — Order Tracking
 Validation of tool calling via AgentCore Gateway and the `order-tracker` Lambda function:
 - **Prompt**: `"Can you track order ORD-001?"`
 - **Customer ID**: `CUST-123`
 - **Outcome**: The agent retrieved order status (`SHIPPED`), item details (`Wireless Headphones Pro`, `$89.99`), carrier (`UPS`), tracking number (`TRK987654321`), and estimated delivery date.
 
-![Test 1 — Order Tracking](02_test1_order_tracking.png)
+![Test 1 — Order Tracking](test1_order_tracking.png)
 
 ---
 
-### 3. Test 2 — Refund Processing
+### Test 2 — Refund Processing
 Validation of refund initiation via AgentCore Gateway and the `refund-processor` Lambda tool:
 - **Prompt**: `"I want to return my Kindle Paperwhite (ORD-002). Please initiate a refund."`
 - **Customer ID**: `CUST-123`
 - **Outcome**: The agent successfully processed the return for `ORD-002`, approved a refund of `$139.99` back to the customer's payment method, generated refund confirmation ID `REF-BSSB2QTJ`, and offered a prepaid return shipping label.
 
-![Test 2 — Refund Processing](03_test2_refund_processing.png)
+![Test 2 — Refund Processing](test2_refund_processing.png)
 
 ---
 
-### 4. Test 3 — Knowledge Base (RAG)
+### Test 3 — Knowledge Base (RAG)
 Validation of RAG search using the `search_knowledge_base` tool connected to Amazon Bedrock Knowledge Base:
 - **Prompt**: `"What are the benefits of the Platinum loyalty tier?"`
 - **Customer ID**: `CUST-123`
@@ -42,7 +42,23 @@ Validation of RAG search using the `search_knowledge_base` tool connected to Ama
   - **Priority customer support** with dedicated assistance
   - Tier threshold: 5,000+ points
 
-![Test 3 — Knowledge Base (RAG)](04_test3_knowledge_base_rag.png)
+![Test 3 — Knowledge Base (RAG)](test3_knowledge_base_rag.png)
 
+---
 
+### Test 4 — Long-Term Memory (Two Sessions)
+Validation of cross-session customer facts and preference extraction using Bedrock AgentCore Memory:
+- **Session A (`s-A`)**:
+  - **Prompt**: `"Hi, I am Jane. I prefer concise responses."`
+  - **Customer ID**: `CUST-123`
+  - **Extraction**: Bedrock background pipeline extracted facts (*"Jane prefers concise responses."*) and user preferences (*"Prefers concise responses"* for communication style).
+- **Session B (`s-B`)**:
+  - **Prompt**: `"Do you remember my name and communication preference?"`
+  - **Customer ID**: `CUST-123` (new session, same customer)
+  - **Outcome**: The agent recalled her name and communication preference from long-term memory: *"Hello Jane! Yes, I remember your name and that you prefer concise responses. How can I assist you today?"*
 
+#### Session A — Introduction
+![Test 4 — Session A Introduction](test4_memory_recall_session_a.png)
+
+#### Session B — Memory Recall
+![Test 4 — Session B Memory Recall](test4_memory_recall_session_b.png)

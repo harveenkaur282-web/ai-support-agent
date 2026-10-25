@@ -160,6 +160,13 @@ gateway_tools = client.list_tools_sync()
 tools.extend(gateway_tools)
 ```
 
+---
 
+## Challenge 10: Asynchronous Memory Extraction Delay in Bedrock AgentCore
+
+**When:** Testing multi-session memory recall (Test 4)  
+**Problem:** In Session A, the user introduced themselves: *"Hi, I am Jane. I prefer concise responses."* When immediately starting Session B to test recall (*"Do you remember my name and communication preference?"*), the agent responded that it did not have access to the user's name or preferences.  
+**Root Cause:** Bedrock AgentCore processes semantic memories (facts and user preferences) asynchronously in the background using an internal LLM extraction pipeline. While raw conversation events are stored quickly by `create_event`, the extraction into searchable semantic memory strategies (`SEMANTIC` and `USER_PREFERENCE`) takes approximately 60 to 90 seconds. Querying too quickly results in zero retrieved memory records.  
+**Fix:** Allowed a short waiting window (~60–90 seconds) after Session A before invoking Session B. Once the background extraction job completed, `retrieve_memories` successfully populated the prompt context with the extracted facts (`"Jane prefers concise responses."`) and user preferences, and the agent correctly addressed the customer by name and kept responses brief.
 
 
