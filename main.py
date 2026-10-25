@@ -432,6 +432,16 @@ print(json.dumps(result))
 #   7. Return the text from the first content block of the response
 #   8. Handle exceptions gracefully
 
+SYSTEM_PROMPT = """You are a helpful and polite Amazon Customer Support AI Assistant.
+You have access to several specialized tools:
+1. `search_knowledge_base`: Use for product details, warranties, shipping policies, returns guidelines, and catalog lookups.
+2. `calculate_loyalty_discount`: Use to compute loyalty point redemption, tier discounts, point balances, and order totals.
+3. Gateway MCP Tools: Use to track order statuses (order-tracker) and process customer refund requests (refund-processor).
+4. `browser`: Use to perform visual checks or retrieve web-based support information.
+
+Always provide concise, empathetic, and accurate responses. When memory context is provided in the prompt, leverage it seamlessly to personalize the conversation without redundantly repeating the raw context block.
+"""
+
 @app.entrypoint
 async def invoke(payload, context=None):
     """
@@ -442,8 +452,68 @@ async def invoke(payload, context=None):
       customer_id (str, optional) — unique customer identifier
       session_id  (str, optional) — session identifier; generated if absent
     """
-    # TODO: Implement the agent invocation
-    pass
+    user_input = payload.get("prompt", "")
+    actor_id = payload.get("customer_id", "default_customer")
+    session_id = payload.get("session_id") or str(uuid.uuid4())
+
+    # 1. Instantiate Memory Hook
+    memory_hook = MemoryHook(
+        actor_id=actor_id,
+        session_id=session_id,
+        memory_client=memory_client,
+        memory_id=MEMORY_ID,
+    )
+
+    # 2. Instantiate Browser Tool
+    agent_core_browser = AgentCoreBrowser(region=REGION)
+
+    # 3. Base Tools
+    tools = [
+        search_knowledge_base,
+        calculate_loyalty_discount,
+        agent_core_browser.browser,
+    ]
+
+    try:
+        # 4. Connect to Gateway via MCPClient
+        client = MCPClient(
+            lambda: streamable_http_client(GATEWAY_URL),
+            tools_prefix="gateway",
+        )
+        await client.start()
+        gateway_tools = client.list_tools_sync()
+        tools.extend(gateway_tools)
+
+        # 5. Assemble Agent
+        agent = Agent(
+            model=model,
+            system_prompt=SYSTEM_PROMPT,
+            tools=tools,
+            hooks=[memory_hook],
+        )
+
+        # 6. Invoke Agent
+        result = await agent.invoke_async(user_input)
+
+        # 7. Extract response text
+        content = getattr(result, "content", None)
+        if isinstance(content, str):
+            return content
+        elif isinstance(content, list) and content and "text" in content[0]:
+            return content[0]["text"]
+        elif hasattr(result, "message"):
+            msg_content = result.message.get("content", "")
+            if isinstance(msg_content, str):
+                return msg_content
+            elif isinstance(msg_content, list) and msg_content and "text" in msg_content[0]:
+                return msg_content[0]["text"]
+
+        return str(result)
+
+    except Exception as e:
+        logger.error(f"Error during agent invocation: {e}", exc_info=True)
+        return f"An error occurred while processing your request: {e}"
+
 
 
 # ── CLI entry point (do not modify) ──────────────────────────────────────────
