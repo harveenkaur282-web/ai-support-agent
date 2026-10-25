@@ -70,3 +70,27 @@ Check AWS caller identity:
 ```bash
 aws sts get-caller-identity
 ```
+
+---
+
+## Environment Setup Screenshots
+
+The following screenshots document the deployed and verified prerequisite infrastructure in the Udacity sandbox AWS account:
+
+### 1. Bedrock AgentCore Gateway (Targets Ready)
+![AgentCore Gateway Ready](docs/screenshots/01_agentcore_gateway_ready.png)
+
+### 2. Bedrock Knowledge Base Overview
+![Knowledge Base Overview](docs/screenshots/02_knowledge_base_overview.png)
+
+### 3. Knowledge Base RAG Query Verification
+![Knowledge Base Test RAG](docs/screenshots/03_knowledge_base_test_rag.png)
+
+### 4. Bedrock AgentCore Memory Strategies
+![AgentCore Memory](docs/screenshots/04_agentcore_memory.png)
+
+### 5. Lambda Functions (Order Tracker & Refund Processor)
+![Lambda Functions](docs/screenshots/05_lambda_functions.png)
+
+### 6. API Gateway (REST API & Proxy Routes)
+![API Gateway](docs/screenshots/06_api_gateway_resources.png)
