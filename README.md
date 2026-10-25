@@ -1,4 +1,4 @@
-# Customer Support AI Agent — Amazon Bedrock AgentCore
+# Customer Support AI Agent: Amazon Bedrock AgentCore
 
 Building a production-grade AI customer support agent using **Amazon Bedrock AgentCore** and the **Strands SDK**.
 
@@ -10,16 +10,16 @@ The agent serves as an intelligent interface between customers and an e-commerce
 
 ---
 
-## Infrastructure & Environment Setup
+## IEnvironment Setup
 
-All prerequisite AWS infrastructure has been provisioned and configured in **`us-east-1`** using the provided Udacity sandbox account:
+Aws setup configured in **`us-east-1`** using the provided Udacity sandbox account:
 
 | Resource | Details |
 |----------|---------|
 | **Region** | `us-east-1` (N. Virginia) |
 | **AWS Account** | `057616154556` (Udacity Sandbox) |
-| **Lambda — order-tracker** | `arn:aws:lambda:us-east-1:057616154556:function:order-tracker` |
-| **Lambda — refund-processor** | `arn:aws:lambda:us-east-1:057616154556:function:refund-processor` |
+| **Lambda : order-tracker** | `arn:aws:lambda:us-east-1:057616154556:function:order-tracker` |
+| **Lambda : refund-processor** | `arn:aws:lambda:us-east-1:057616154556:function:refund-processor` |
 | **API Gateway** | `CustomerSupportOrderAPI` (ID: `jnq74xt861`, Stage: `prod`) |
 | **AgentCore Gateway** | `CustomerSupportGateway` (`customersupportgateway-yfa07mmavr`) |
 | **Gateway URL** | `https://customersupportgateway-yfa07mmavr.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp` |
