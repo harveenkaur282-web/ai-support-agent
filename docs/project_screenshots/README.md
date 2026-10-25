@@ -13,7 +13,7 @@ successful packaging, S3 staging, IAM role binding, and runtime deployment to Am
 ---
 
 ### Test 1 — Order Tracking
-Validation of tool calling via AgentCore Gateway and the `order-tracker` Lambda function:
+Validation of tool calling via AgentCore Gateway and the `order-tracker` tool (API-based target, API Gateway):
 - **Prompt**: `"Can you track order ORD-001?"`
 - **Customer ID**: `CUST-123`
 - **Outcome**: The agent retrieved order status (`SHIPPED`), item details (`Wireless Headphones Pro`, `$89.99`), carrier (`UPS`), tracking number (`TRK987654321`), and estimated delivery date.
@@ -23,7 +23,7 @@ Validation of tool calling via AgentCore Gateway and the `order-tracker` Lambda 
 ---
 
 ### Test 2 — Refund Processing
-Validation of refund initiation via AgentCore Gateway and the `refund-processor` Lambda tool:
+Validation of refund initiation via AgentCore Gateway and the `refund-processor` tool (Lambda-based target):
 - **Prompt**: `"I want to return my Kindle Paperwhite (ORD-002). Please initiate a refund."`
 - **Customer ID**: `CUST-123`
 - **Outcome**: The agent successfully processed the return for `ORD-002`, approved a refund of `$139.99` back to the customer's payment method, generated refund confirmation ID `REF-BSSB2QTJ`, and offered a prepaid return shipping label.
