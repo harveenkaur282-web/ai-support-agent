@@ -5,7 +5,7 @@ Here are screenshots of the agent deployment, functional query execution, tool u
 ---
 
 ### Bedrock AgentCore Deployment Success
-Visual confirmation of successful packaging, S3 staging, IAM role binding, and runtime deployment to Amazon Bedrock AgentCore (`customer_support_agent-zf9262EdhB`).
+successful packaging, S3 staging, IAM role binding, and runtime deployment to Amazon Bedrock AgentCore (`customer_support_agent-zf9262EdhB`).
 
 ![AgentCore Deploy Success](agentcore_deploy_success.png)
 ![AgentCore Deploy Success Part 2](agentcore_deploy_success_part2.png)
