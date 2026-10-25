@@ -102,4 +102,17 @@ uv run agentcore deploy
 - **Deployment Status**: Success (`direct_code_deploy`)
 - **Agent ARN**: `arn:aws:bedrock-agentcore:us-east-1:057616154556:runtime/customer_support_agent-zf9262EdhB`
 
+---
+
+## Step 10: Configure Resource Permissions (Completed)
+Configure its resource permissions using student AWS credentials:
+```bash
+uv run setup_permissions.py
+```
+- **Action**: Grants the agent access to Knowledge Base, Memory, and Browser.
+- **Inline Policy Attached**: `CustomerSupportIntegrations`
+- **Role**: `arn:aws:iam::057616154556:role/AmazonBedrockAgentCoreSDKRuntime-us-east-1-aa96c3a063`
+- **Status**: Permissions applied and verified.
+
+
 
