@@ -89,24 +89,16 @@ Let the toolkit create the runtime execution role when prompted.
 
 ---
 
-## Environment Setup Screenshots
+## Environment Setup Verification
 
-The following screenshots document the deployed and verified prerequisite infrastructure in the Udacity sandbox AWS account:
+All prerequisite infrastructure resources have been provisioned and verified in the Udacity sandbox AWS account. Visual verification screenshots are documented in the [Environment Screenshots](docs/environment_screenshots/README.md) gallery:
 
-### 1. Bedrock AgentCore Gateway (Targets Ready)
-![AgentCore Gateway Ready](docs/screenshots/01_agentcore_gateway_ready.png)
+- **Bedrock AgentCore Gateway** (Targets & MCP tools ready)
+- **Bedrock Knowledge Base** (OpenSearch Serverless & synced product catalog)
+- **Knowledge Base RAG Query Verification** (Console retrieval test)
+- **AgentCore Memory** (Session summary & semantic strategies)
+- **Lambda Functions** (`order-tracker` & `refund-processor`)
+- **API Gateway** (`CustomerSupportOrderAPI` routes & stages)
 
-### 2. Bedrock Knowledge Base Overview
-![Knowledge Base Overview](docs/screenshots/02_knowledge_base_overview.png)
+See [docs/environment_screenshots/README.md](docs/environment_screenshots/README.md) for full screenshots.
 
-### 3. Knowledge Base RAG Query Verification
-![Knowledge Base Test RAG](docs/screenshots/03_knowledge_base_test_rag.png)
-
-### 4. Bedrock AgentCore Memory Strategies
-![AgentCore Memory](docs/screenshots/04_agentcore_memory.png)
-
-### 5. Lambda Functions (Order Tracker & Refund Processor)
-![Lambda Functions](docs/screenshots/05_lambda_functions.png)
-
-### 6. API Gateway (REST API & Proxy Routes)
-![API Gateway](docs/screenshots/06_api_gateway_resources.png)
