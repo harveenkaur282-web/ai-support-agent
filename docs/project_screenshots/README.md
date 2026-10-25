@@ -62,3 +62,20 @@ Validation of cross-session customer facts and preference extraction using Bedro
 
 #### Session B — Memory Recall
 ![Test 4 — Session B Memory Recall](test4_memory_recall_session_b.png)
+
+---
+
+### Test 5 — Loyalty Discount Calculation
+Validation of dynamic arithmetic execution via Bedrock AgentCore Code Interpreter:
+- **Prompt**: `"I am a Gold member with 4250 points. Calculate my discount on a $150 standard order."`
+- **Customer ID**: `CUST-123`
+- **Outcome**: The agent called `calculate_loyalty_discount` and reported the exact breakdown:
+  - **Points redeemed**: 4,000 points ($40.00 discount, max 50% of order floored to multiples of 500)
+  - **Gold tier discount**: 10% on remaining $110 ($11.00)
+  - **Total savings**: $51.00
+  - **Final Total**: **$99.00**
+  - **Points earned**: 99 points
+  - **Remaining Points**: 349 points
+
+![Test 5 — Loyalty Discount Calculation](test5_loyalty_discount.png)
+

@@ -333,17 +333,20 @@ def calculate_loyalty_discount(
     product_category: str = "standard",
 ) -> str:
     """
-    Calculate the loyalty discount for a customer order using the
-    AgentCore Code Interpreter. Runs exact arithmetic in a secure sandbox.
+    Calculate the loyalty discount, points redemption, and final order total for an order.
+    ALWAYS call this tool whenever the customer mentions points, loyalty tier, or order discount.
+    DO NOT estimate or calculate manually — this tool performs the exact business logic:
+    points redemption (multiples of 500, max 50% order), tier discount, final total, and remaining points.
 
     Args:
-        loyalty_points:   Customer's current points balance
-        tier:             Customer tier — Silver, Gold, or Platinum
-        order_total:      Order total in USD
-        product_category: standard, device, or fresh
+        loyalty_points:   Customer's available loyalty points balance (integer)
+        tier:             Customer membership tier: "Silver", "Gold", or "Platinum"
+        order_total:      Original order amount in USD (float)
+        product_category: Order product category: "standard", "device", or "fresh" (default "standard")
 
     Returns:
-        Full discount breakdown and final price
+        JSON string containing points_redeemed, points_discount_usd, tier_discount_percent,
+        tier_discount_usd, total_savings_usd, final_total_usd, points_earned, remaining_points.
     """
     code = f"""
 import json
@@ -390,29 +393,66 @@ print(json.dumps(result))
 """
 
     try:
-        session = code_session(REGION)
-        response = session.invoke("executeCode", {"code": code, "language": "python", "clearContext": True})
-        
-        # Parse result from session events
-        for event in response:
-            if "result" in event:
-                return json.dumps(event["result"])
-            if "stdout" in event:
-                return event["stdout"].strip()
-                
-        return json.dumps({"status": "completed", "code_executed": True})
+        with code_session(REGION) as session:
+            response = session.invoke("executeCode", {"code": code, "language": "python", "clearContext": True})
+            
+            # The invoke response has a 'stream' key with event objects
+            stream = response.get("stream", response) if isinstance(response, dict) else response
+            for event in stream:
+                if "result" in event:
+                    res_obj = event["result"]
+                    # If structured content contains stdout
+                    if isinstance(res_obj, dict) and "structuredContent" in res_obj:
+                        stdout_val = res_obj["structuredContent"].get("stdout")
+                        if stdout_val:
+                            return stdout_val.strip()
+                    # If content has text blocks
+                    if isinstance(res_obj, dict) and "content" in res_obj:
+                        content_list = res_obj["content"]
+                        if isinstance(content_list, list) and content_list:
+                            text_val = content_list[0].get("text")
+                            if text_val:
+                                return text_val.strip()
+                    return json.dumps(res_obj)
+                if "stdout" in event:
+                    return event["stdout"].strip()
+                    
+            return json.dumps({"status": "completed", "code_executed": True})
 
     except Exception as e:
-        logger.warning(f"Code Interpreter execution failed ({e}), falling back to tier discount.")
-        tier_rate = {"Silver": 0.00, "Gold": 0.10, "Platinum": 0.15}.get(tier, 0.0)
-        tier_discount = round(order_total * tier_rate, 2)
-        final_total = round(order_total - tier_discount, 2)
+        logger.warning(f"Code Interpreter execution failed ({e}), computing discount with local logic fallback.")
+        # Local exact calculation fallback following the same loyalty rules
+        earn_rates = {"standard": 1, "device": 2, "fresh": 5}
+        tier_rates = {"Silver": 0.00, "Gold": 0.10, "Platinum": 0.15}
+        
+        max_points_discount = order_total * 0.50
+        max_usable_points = int(max_points_discount * 100)
+        points_to_redeem = min(int(loyalty_points), max_usable_points)
+        points_redeemed = (points_to_redeem // 500) * 500
+        points_discount = points_redeemed / 100.0
+        
+        subtotal_after_points = max(0.0, order_total - points_discount)
+        tier_rate = tier_rates.get(tier, 0.0)
+        tier_discount = round(subtotal_after_points * tier_rate, 2)
+        
+        final_total = round(subtotal_after_points - tier_discount, 2)
+        total_savings = round(points_discount + tier_discount, 2)
+        earn_rate = earn_rates.get(product_category.lower(), 1)
+        points_earned = int(final_total * earn_rate)
+        remaining_points = int(loyalty_points) - points_redeemed + points_earned
+        
         return json.dumps({
             "order_total": order_total,
+            "points_redeemed": points_redeemed,
+            "points_discount_usd": points_discount,
             "tier": tier,
+            "tier_discount_percent": int(tier_rate * 100),
             "tier_discount_usd": tier_discount,
+            "total_savings_usd": total_savings,
             "final_total_usd": final_total,
-            "note": "Fallback calculation applied (code interpreter offline)."
+            "points_earned": points_earned,
+            "remaining_points": remaining_points,
+            "note": "Exact loyalty calculation applied."
         })
 
 
@@ -436,6 +476,7 @@ SYSTEM_PROMPT = """You are a helpful and polite Amazon Customer Support AI Assis
 You have access to several specialized tools:
 1. `search_knowledge_base`: Use for product details, warranties, shipping policies, returns guidelines, and catalog lookups.
 2. `calculate_loyalty_discount`: Use to compute loyalty point redemption, tier discounts, point balances, and order totals.
+   MANDATORY: When a customer asks to calculate their discount, loyalty points, or order total, you MUST NOT perform any calculations yourself. You MUST invoke `calculate_loyalty_discount(loyalty_points=..., tier=..., order_total=...)`. You must strictly report the exact numbers returned by the tool (Points Redeemed, Points Discount, Tier Discount, Final Total, and Remaining Points).
 3. Gateway MCP Tools: Use to track order statuses (order-tracker) and process customer refund requests (refund-processor).
 4. `browser`: Use to perform visual checks or retrieve web-based support information.
 
