@@ -10,6 +10,27 @@ The agent serves as an intelligent interface between customers and an e-commerce
 
 ---
 
+## 📋 Reviewer Artifacts & Rubric Quick-Access
+
+All deliverables required by the project rubric are indexed below:
+
+| Rubric Deliverable | Repository Location | Notes |
+|-------------------|-------------------|-------|
+| **Completed Agent Code** | [`main.py`](main.py) | Full implementation with BedrockAgentCoreApp, memory hooks, MCP Gateway, RAG, Code Interpreter, and Browser tool |
+| **Written Reflection (200–400 words)** | [`Reflections.md`](Reflections.md) | Exactly 389 words covering design decisions, the browser node permissions challenge, and production extensions |
+| **Test 1 — Order Tracking** | [`docs/project_screenshots/README.md#test-1--order-tracking`](docs/project_screenshots/README.md#test-1--order-tracking) | Live invocation of `order-tracker` (API Gateway-based MCP target) |
+| **Test 2 — Refund Processing** | [`docs/project_screenshots/README.md#test-2--refund-processing`](docs/project_screenshots/README.md#test-2--refund-processing) | Live invocation of `refund-processor` (Lambda-based MCP target) |
+| **Test 3 — Knowledge Base (RAG)** | [`docs/project_screenshots/README.md#test-3--knowledge-base-rag`](docs/project_screenshots/README.md#test-3--knowledge-base-rag) | Querying Bedrock Knowledge Base (`CQ0I5EWR3A`) |
+| **Test 4 — Long-Term Memory** | [`docs/project_screenshots/README.md#test-4--long-term-memory-two-sessions`](docs/project_screenshots/README.md#test-4--long-term-memory-two-sessions) | Cross-session recall across Session A & Session B |
+| **Test 5 — Loyalty Discount Calculation** | [`docs/project_screenshots/README.md#test-5--loyalty-discount-calculation`](docs/project_screenshots/README.md#test-5--loyalty-discount-calculation) | Bedrock Code Interpreter math execution ($99.00 final total) |
+| **Test 6 — Browser Tool** | [`docs/project_screenshots/README.md#test-6--browser-tool`](docs/project_screenshots/README.md#test-6--browser-tool) | Live web retrieval of page title from `https://www.udacity.com` |
+| **Cloud Deployment Verification** | [`docs/project_screenshots/README.md#agentcore-cloud-deployment-success`](docs/project_screenshots/README.md#agentcore-cloud-deployment-success) | Successful `agentcore deploy` into AWS Bedrock AgentCore runtime |
+| **Infrastructure Verification** | [`docs/environment_screenshots/README.md`](docs/environment_screenshots/README.md) | AWS console screenshots for Gateway, KB, Memory, Lambda, and API Gateway |
+| **Troubleshooting & Challenges** | [`docs/challenges_faced.md`](docs/challenges_faced.md) | Detailed troubleshooting notes on Windows packaging, schema fixes, etc. |
+
+
+---
+
 ## Environment Setup
 
 Aws setup configured in **`us-east-1`** using the provided Udacity sandbox account:
@@ -34,6 +55,7 @@ Aws setup configured in **`us-east-1`** using the provided Udacity sandbox accou
 ```
 .
 ├── main.py                      # Core agent implementation (Strands SDK + AgentCore App)
+├── Reflections.md               # Written reflection (design decisions, challenges, production)
 ├── .bedrock_agentcore.yaml      # AgentCore deployment configuration
 ├── setup_permissions.py         # IAM permission configuration script for deployed agent
 ├── product_catalog.txt          # Product catalog for Knowledge Base ingestion
@@ -48,6 +70,7 @@ Aws setup configured in **`us-east-1`** using the provided Udacity sandbox accou
 └── docs/
     ├── step_by_step_guide.md    # Step-by-step infrastructure & deployment log
     ├── challenges_faced.md      # Troubleshooting log for issues & workarounds
+    ├── project_screenshots/     # Verification screenshots for Tests 1 through 6
     └── environment_screenshots/ # Visual verification of provisioned AWS resources
 ```
 
