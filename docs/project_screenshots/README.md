@@ -1,4 +1,4 @@
-# Project Verification Screenshots
+# Project Screenshots
 
 Here are screenshots of the agent deployment, functional query execution, tool usage, memory retention, and browser testing.
 
