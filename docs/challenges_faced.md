@@ -120,4 +120,46 @@ This correctly resolves the namespace mapping:
 {'SEMANTIC': 'cs_agent/{actorId}/facts', 'USER_PREFERENCE': 'cs_agent/{actorId}/preferences'}
 ```
 
+---
+
+## Challenge 8: Strands SDK `MCPClient` Keyword Argument (`tools_prefix` vs `prefix`)
+
+**When:** Invoking the deployed agent for the first time  
+**Error:**
+```text
+An error occurred while processing your request: MCPClient.__init__() got an unexpected keyword argument 'tools_prefix'
+```
+**Root Cause:** The starter code comments and older documentation referenced `tools_prefix="gateway"` when creating the `MCPClient` for the AgentCore Gateway. However, in the installed version of `strands-agents`, the parameter is named `prefix` (singular) rather than `tools_prefix`.  
+**Fix:** Inspected the constructor signature using Python's `inspect.signature(MCPClient.__init__)` and updated `main.py`:
+```python
+client = MCPClient(
+    lambda: streamable_http_client(GATEWAY_URL),
+    prefix="gateway",
+)
+```
+After updating the keyword argument and redeploying, the MCP tools loaded and connected to the gateway as expected.
+
+---
+
+## Challenge 9: `MCPClient.start()` is Synchronous (Cannot Be Awaited)
+
+**When:** Invoking the agent after fixing the prefix parameter  
+**Error:**
+```text
+An error occurred while processing your request: object MCPClient can't be used in 'await' expression
+```
+**Root Cause:** In the Strands SDK, `MCPClient.start()` is a regular synchronous method that returns the `MCPClient` instance itself rather than a coroutine. Prepending `await` caused Python to try awaiting the returned client object.  
+**Fix:** Checked `inspect.iscoroutinefunction(MCPClient.start)` which returned `False`. Removed the `await` keyword in `main.py`:
+```python
+client = MCPClient(
+    lambda: streamable_http_client(GATEWAY_URL),
+    prefix="gateway",
+)
+client.start()
+gateway_tools = client.list_tools_sync()
+tools.extend(gateway_tools)
+```
+
+
+
 

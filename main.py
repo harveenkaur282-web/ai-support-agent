@@ -478,9 +478,10 @@ async def invoke(payload, context=None):
         # 4. Connect to Gateway via MCPClient
         client = MCPClient(
             lambda: streamable_http_client(GATEWAY_URL),
-            tools_prefix="gateway",
+            prefix="gateway",
         )
-        await client.start()
+
+        client.start()
         gateway_tools = client.list_tools_sync()
         tools.extend(gateway_tools)
 
