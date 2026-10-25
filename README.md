@@ -107,3 +107,15 @@ All prerequisite infrastructure resources have been provisioned and verified in 
 
 See [docs/environment_screenshots/README.md](docs/environment_screenshots/README.md) for full screenshots.
 
+---
+
+## Project Verification Screenshots
+
+Visual verification of the deployed agent runtime and live functional query testing are documented in the [Project Screenshots](docs/project_screenshots/README.md) gallery:
+
+- **Bedrock AgentCore Deployment Success** (Live runtime deployed)
+- **Functional Tests & Tool Verification** (Order tracking, KB retrieval, loyalty calculation, and memory)
+
+See [docs/project_screenshots/README.md](docs/project_screenshots/README.md) for full screenshots.
+
+
