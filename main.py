@@ -154,37 +154,104 @@ class MemoryHook(HookProvider):
         memory_client: MemoryClient,
         memory_id: str,
     ):
-        # TODO: Store actor_id, session_id, memory_id, memory_client as attributes
-        # TODO: Call get_namespaces() and store the result as self.namespaces
-        pass
+        self.actor_id = actor_id
+        self.session_id = session_id
+        self.memory_client = memory_client
+        self.memory_id = memory_id
+        self.namespaces = get_namespaces(memory_client, memory_id)
 
     def retrieve_customer_context(self, event: MessageAddedEvent):
         """Retrieve relevant memories and prepend them to the user message."""
-        # TODO: Implement memory retrieval
-        # Steps:
-        #   1. Get the last message from event.agent.messages
-        #   2. Check it is a user message and not a tool result
-        #   3. Extract the user query text
-        #   4. For each namespace in self.namespaces, call retrieve_memories()
-        #   5. Collect non-empty memory texts with strategy type tags
-        #   6. If any found, prepend them to the user message
-        pass
+        if not event.agent.messages:
+            return
+
+        last_message = event.agent.messages[-1]
+        if last_message.get("role") != "user":
+            return
+
+        content = last_message.get("content", [])
+        if isinstance(content, str):
+            query = content
+        elif isinstance(content, list) and content and "text" in content[0]:
+            query = content[0]["text"]
+        else:
+            return
+
+        memories = []
+        for strat_type, template in self.namespaces.items():
+            ns = template.format(actorId=self.actor_id)
+            try:
+                results = self.memory_client.retrieve_memories(
+                    memory_id=self.memory_id,
+                    namespace=ns,
+                    query=query,
+                    top_k=5,
+                )
+                for item in results:
+                    text = ""
+                    if isinstance(item, dict):
+                        content_val = item.get("content")
+                        if isinstance(content_val, dict):
+                            text = content_val.get("text", "")
+                        elif isinstance(content_val, str):
+                            text = content_val
+                        else:
+                            text = item.get("text", "")
+                    if text:
+                        memories.append(f"- [{strat_type}] {text}")
+            except Exception as e:
+                logger.warning(f"Error retrieving {strat_type} memories: {e}")
+
+        if memories:
+            context_prefix = "Customer Context:\n" + "\n".join(memories) + "\n\n"
+            if isinstance(content, str):
+                last_message["content"] = context_prefix + content
+            elif isinstance(content, list) and content and "text" in content[0]:
+                last_message["content"][0]["text"] = context_prefix + content[0]["text"]
 
     def save_support_interaction(self, event: AfterInvocationEvent):
         """Save the completed turn to memory after the agent responds."""
-        # TODO: Implement memory saving
-        # Steps:
-        #   1. Get messages from event.agent.messages
-        #   2. Walk backwards to find the last user query (plain text)
-        #      and the last assistant response
-        #   3. Call memory_client.create_event() with both messages
-        pass
+        messages = getattr(event.agent, "messages", [])
+        customer_query = None
+        agent_response = None
+
+        for msg in reversed(messages):
+            role = msg.get("role")
+            content = msg.get("content")
+
+            text = ""
+            if isinstance(content, str):
+                text = content
+            elif isinstance(content, list) and content and "text" in content[0]:
+                text = content[0]["text"]
+
+            if role == "assistant" and not agent_response and text:
+                agent_response = text
+            elif role == "user" and not customer_query and text:
+                if "Customer Context:" in text and "\n\n" in text:
+                    customer_query = text.split("\n\n", 1)[1]
+                else:
+                    customer_query = text
+
+            if customer_query and agent_response:
+                break
+
+        if customer_query and agent_response:
+            try:
+                self.memory_client.create_event(
+                    memory_id=self.memory_id,
+                    actor_id=self.actor_id,
+                    session_id=self.session_id,
+                    messages=[(customer_query, "USER"), (agent_response, "ASSISTANT")],
+                )
+            except Exception as e:
+                logger.warning(f"Error saving support interaction to memory: {e}")
 
     def register_hooks(self, registry: HookRegistry) -> None:  # type: ignore
         """Register both memory callbacks."""
-        # TODO: Register retrieve_customer_context on MessageAddedEvent
-        # TODO: Register save_support_interaction on AfterInvocationEvent
-        pass
+        registry.add_callback(MessageAddedEvent, self.retrieve_customer_context)
+        registry.add_callback(AfterInvocationEvent, self.save_support_interaction)
+
 
 
 # ── TODO 6 — Knowledge Base Tool ─────────────────────────────────────────────
