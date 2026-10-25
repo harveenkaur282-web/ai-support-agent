@@ -345,16 +345,76 @@ def calculate_loyalty_discount(
     Returns:
         Full discount breakdown and final price
     """
-    # TODO: Build the code string (use an f-string to inject the arguments)
-    code = ""  # Replace with your code string
+    code = f"""
+import json
+
+earn_rates = {{"standard": 1, "device": 2, "fresh": 5}}
+tier_rates = {{"Silver": 0.00, "Gold": 0.10, "Platinum": 0.15}}
+
+order_total = {float(order_total)}
+loyalty_points = {int(loyalty_points)}
+tier = "{tier}"
+product_category = "{product_category.lower()}"
+
+# Points redemption: 100 points = $1, must be multiple of 500 points ($5), max 50% of order total
+max_points_discount = order_total * 0.50
+max_usable_points = int(max_points_discount * 100)
+points_to_redeem = min(loyalty_points, max_usable_points)
+points_redeemed = (points_to_redeem // 500) * 500
+points_discount = points_redeemed / 100.0
+
+subtotal_after_points = max(0.0, order_total - points_discount)
+tier_rate = tier_rates.get(tier, 0.0)
+tier_discount = round(subtotal_after_points * tier_rate, 2)
+
+final_total = round(subtotal_after_points - tier_discount, 2)
+total_savings = round(points_discount + tier_discount, 2)
+
+earn_rate = earn_rates.get(product_category, 1)
+points_earned = int(final_total * earn_rate)
+remaining_points = loyalty_points - points_redeemed + points_earned
+
+result = {{
+    "order_total": order_total,
+    "points_redeemed": points_redeemed,
+    "points_discount_usd": points_discount,
+    "tier": tier,
+    "tier_discount_percent": int(tier_rate * 100),
+    "tier_discount_usd": tier_discount,
+    "total_savings_usd": total_savings,
+    "final_total_usd": final_total,
+    "points_earned": points_earned,
+    "remaining_points": remaining_points
+}}
+print(json.dumps(result))
+"""
 
     try:
-        # TODO: Execute the code using code_session and return the result
-        pass
+        session = code_session(REGION)
+        response = session.invoke("executeCode", {"code": code, "language": "python", "clearContext": True})
+        
+        # Parse result from session events
+        for event in response:
+            if "result" in event:
+                return json.dumps(event["result"])
+            if "stdout" in event:
+                return event["stdout"].strip()
+                
+        return json.dumps({"status": "completed", "code_executed": True})
 
     except Exception as e:
-        # TODO: Implement fallback calculation using tier discount only
-        pass
+        logger.warning(f"Code Interpreter execution failed ({e}), falling back to tier discount.")
+        tier_rate = {"Silver": 0.00, "Gold": 0.10, "Platinum": 0.15}.get(tier, 0.0)
+        tier_discount = round(order_total * tier_rate, 2)
+        final_total = round(order_total - tier_discount, 2)
+        return json.dumps({
+            "order_total": order_total,
+            "tier": tier,
+            "tier_discount_usd": tier_discount,
+            "final_total_usd": final_total,
+            "note": "Fallback calculation applied (code interpreter offline)."
+        })
+
 
 
 # ── TODO 8 — Agent Entrypoint ─────────────────────────────────────────────────
