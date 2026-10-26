@@ -47,21 +47,20 @@ Validation of RAG search using the `search_knowledge_base` tool connected to Ama
 ---
 
 ### Test 4 — Long-Term Memory (Two Sessions)
-Validation of cross-session customer facts and preference extraction using Bedrock AgentCore Memory:
-- **Session A (`s-A`)**:
-  - **Prompt**: `"Hi, I am Jane. I prefer concise responses."`
-  - **Customer ID**: `CUST-123`
-  - **Extraction**: Bedrock background pipeline extracted facts (*"Jane prefers concise responses."*) and user preferences (*"Prefers concise responses"* for communication style).
-- **Session B (`s-B`)**:
-  - **Prompt**: `"Do you remember my name and communication preference?"`
-  - **Customer ID**: `CUST-123` (new session, same customer)
-  - **Outcome**: The agent recalled her name and communication preference from long-term memory: *"Hello Jane! Yes, I remember your name and that you prefer concise responses. How can I assist you today?"*
+#### Session A — Information Shared with the Agent (Introduce yourself)
+- **Session ID**: `s-A`
+- **Customer ID**: `CUST-123`
+- **Prompt**: `"Hi, I am Jane. I prefer concise responses."`
+- **Extraction**: Bedrock background pipeline extracted facts (*"Jane prefers concise responses."*) and user preferences (*"Prefers concise responses"* for communication style).
 
-#### Session A — Introduction
-![Test 4 — Session A Introduction](test4_memory_recall_session_a.png)
+![Test 4 — Session A (Information shared with agent)](test4_memory_recall_session_a.png)
 
-#### Session B — Memory Recall
-![Test 4 — Session B Memory Recall](test4_memory_recall_session_b.png)
+#### Session B — Information Retrieved from Memory (Verify recall)
+- **Session ID**: `s-B` (new session, same customer `CUST-123`)
+- **Prompt**: `"Do you remember my name and communication preference?"`
+- **Outcome**: The agent recalled her name and communication preference from long-term memory: *"Hello Jane! Yes, I remember your name and that you prefer concise responses. How can I assist you today?"*
+
+![Test 4 — Session B (Information retrieved from memory)](test4_memory_recall_session_b.png)
 
 ---
 
