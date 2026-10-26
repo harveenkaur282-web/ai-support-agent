@@ -19,7 +19,7 @@
 <body>
 <svg id="d" width="1600" height="1040" viewBox="0 0 1600 1040" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#232f3e"/></marker>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#232f3e"/></marker>
   </defs>
   <rect width="1600" height="1040" fill="#fff"/>
   <text x="800" y="40" text-anchor="middle" font-size="26" font-weight="700" fill="#232f3e">Customer Support AI Agent — Amazon Bedrock AgentCore Architecture</text>
@@ -31,10 +31,10 @@
   <rect x="270" y="125" width="1290" height="875" rx="6" fill="none" stroke="#00a4a6" stroke-width="2" stroke-dasharray="7 5"/>
   <text x="285" y="148" class="grp" fill="#00a4a6">Region: us-east-1</text>
 
-  <rect x="690" y="165" width="850" height="248" rx="6" fill="#faf5ff" stroke="#8c4fff" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <rect x="690" y="165" width="850" height="262" rx="6" fill="#faf5ff" stroke="#8c4fff" stroke-width="1.5" stroke-dasharray="6 4"/>
   <text x="705" y="187" class="grp" fill="#8c4fff">AgentCore Gateway — MCP tools</text>
-  <rect x="690" y="428" width="850" height="150" rx="6" fill="#f2fbf4" stroke="#3f8624" stroke-width="1.5" stroke-dasharray="6 4"/>
-  <text x="705" y="450" class="grp" fill="#3f8624">Retrieval-Augmented Generation (RAG)</text>
+  <rect x="690" y="440" width="850" height="150" rx="6" fill="#f2fbf4" stroke="#3f8624" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="705" y="462" class="grp" fill="#3f8624">Retrieval-Augmented Generation (RAG)</text>
 
   <g id="edges"></g>
   <g id="nodes"></g>
@@ -62,17 +62,17 @@ const user=node(125,midY,COL.user,"img:user","Customer","Chat / API invoke");
 const rt=node(450,midY,COL.ml,"img:bedrock","AgentCore Runtime","Strands Agent · main.py",100);
 const nova=node(450,330,COL.ml,"img:bedrock","Amazon Bedrock","Nova 2 Lite (LLM)");
 
-const gw=node(790,225,COL.app,"img:bedrock","AgentCore Gateway","MCP endpoint");
-const apig=node(1070,225,COL.app,"img:apigw","Amazon API Gateway","CustomerSupportOrderAPI");
-const l1=node(1380,225,COL.compute,"img:lambda","order-tracker","AWS Lambda",64);
-const l2=node(1380,335,COL.compute,"img:lambda","refund-processor","AWS Lambda (direct target)",64);
+const gw=node(790,243,COL.app,"img:bedrock","AgentCore Gateway","MCP endpoint");
+const apig=node(1070,243,COL.app,"img:apigw","Amazon API Gateway","CustomerSupportOrderAPI");
+const l1=node(1380,243,COL.compute,"img:lambda","order-tracker","AWS Lambda",64);
+const l2=node(1380,352,COL.compute,"img:lambda","refund-processor","AWS Lambda (direct target)",64);
 
-const kb=node(790,495,COL.ml,"img:bedrock","Bedrock Knowledge Base","search_knowledge_base tool");
-const os=node(1070,495,COL.db,"img:opensearch","OpenSearch Serverless","vector store");
-const s3=node(1380,495,COL.storage,"img:s3","Amazon S3","product_catalog.txt");
+const kb=node(790,510,COL.ml,"img:bedrock","Bedrock Knowledge Base","search_knowledge_base tool");
+const os=node(1070,510,COL.db,"img:opensearch","OpenSearch Serverless","vector store");
+const s3=node(1380,510,COL.storage,"img:s3","Amazon S3","product_catalog.txt");
 
-const mem=node(790,660,COL.db,"img:bedrock","AgentCore Memory","MemoryHook · facts + preferences");
-const ci=node(790,790,COL.compute,"img:bedrock","AgentCore Code Interpreter","calculate_loyalty_discount");
+const mem=node(790,665,COL.db,"img:bedrock","AgentCore Memory","MemoryHook · facts + preferences");
+const ci=node(790,795,COL.compute,"img:bedrock","AgentCore Code Interpreter","calculate_loyalty_discount");
 const br=node(790,925,COL.net,"img:bedrock","AgentCore Browser","managed Chrome (Playwright)",56);
 const web=node(1070,925,COL.user,"www","Live web page","udacity.com",56);
 
@@ -80,7 +80,7 @@ const web=node(1070,925,COL.user,"www","Live web page","udacity.com",56);
 path(`M${user.r},${midY} L${rt.l-4},${midY}`);
 badge((user.r+rt.l)/2,midY-20,1);
 // runtime -> nova
-path(`M${rt.cx},${rt.t} L${rt.cx},${nova.b+44}`);
+path(`M${rt.cx},${rt.t} L${rt.cx},${nova.b+44}`); edges.lastChild.setAttribute("marker-start","url(#arr)");
 badge(rt.cx+22,(rt.t+nova.b+44)/2,2);
 // bus
 const busX=620;
@@ -91,11 +91,11 @@ path(`M${busX},${gw.cy} L${busX},${br.cy}`,"bus");
 path(`M${gw.r},${gw.cy} L${apig.l-4},${apig.cy}`);
 path(`M${apig.r},${apig.cy} L${l1.l-4},${l1.cy}`);
 path(`M${gw.r+70},${gw.cy} L${gw.r+70},${l2.cy} L${l2.l-4},${l2.cy}`);
-badge(gw.r+16,gw.cy-18,3);
+badge(gw.r+24,gw.cy-30,3);
 // RAG
 path(`M${kb.r},${kb.cy} L${os.l-4},${os.cy}`);
 path(`M${os.r},${os.cy} L${s3.l-4},${s3.cy}`);
-badge(kb.r+16,kb.cy-18,4);
+badge(kb.r+24,kb.cy-30,4);
 badge(mem.l-26,mem.cy-18,5);
 badge(ci.l-26,ci.cy-18,6);
 path(`M${br.r},${br.cy} L${web.l-4},${web.cy}`);
