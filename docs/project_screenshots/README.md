@@ -4,8 +4,9 @@ Here are screenshots of the agent deployment, functional query execution, tool u
 
 ---
 
-### Bedrock AgentCore Deployment Success
-successful packaging, S3 staging, IAM role binding, and runtime deployment to Amazon Bedrock AgentCore (`customer_support_agent-zf9262EdhB`).
+### AgentCore Cloud Deployment Success
+<a name="agentcore-cloud-deployment-success"></a>
+Successful packaging, S3 staging, IAM role binding, and runtime deployment to Amazon Bedrock AgentCore (`customer_support_agent-zf9262EdhB`).
 
 ![AgentCore Deploy Success](agentcore_deploy_success.png)
 ![AgentCore Deploy Success Part 2](agentcore_deploy_success_part2.png)
@@ -80,7 +81,8 @@ Validation of dynamic arithmetic execution via Bedrock AgentCore Code Interprete
 
 
 
-### Test 6 - Browser Tool
+### Test 6 — Browser Tool
+<a name="test-6--browser-tool"></a>
 - **Prompt**: "Go to https://www.udacity.com and tell me the page title."
 - **Customer ID**: `CUST-123`
 - **Outcome**: The agent used the browser tool on the live site and returned the title **"Learn the Latest Tech Skills; Advance Your Career | Udacity"**.
