@@ -2,7 +2,7 @@
 
 ## A design decision I made and why
 
-For the loyalty discount, I didn't let the model do the arithmetic. I made it call a `calculate_loyalty_discount` tool that runs the calculation in the AgentCore Code Interpreter, and I wrote the system prompt so the agent has to use that tool. LLMs are unreliable at multi-step maths, like flooring points to multiples of 500 and then applying a tier discount. Running real code gives the same answer every time. In Test 5 it returned $99.00, which matched my hand calculation. I also added a local fallback with the same logic, so if the sandbox call fails the customer still gets a correct answer.
+For the loyalty discount, I didn't let the model do the arithmetic. I made it call a `calculate_loyalty_discount` tool that runs the calculation in the AgentCore Code Interpreter, and I wrote the system prompt so the agent has to use that tool. LLMs are unreliable at multi-step maths, like flooring points to multiples of 500 and then applying a tier discount. Running real code gives the same answer every time. In Test 5 it returned $99.00, which matched my hand calculation. I also added a tier-only discount fallback, so if the sandbox call fails the customer still receives their membership tier discount.
 
 ## A challenge I hit and how I fixed it
 

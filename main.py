@@ -359,41 +359,12 @@ print(json.dumps(result))
             return json.dumps({"status": "completed", "code_executed": True})
 
     except Exception as e:
-        logger.warning(f"Code Interpreter execution failed ({e}), computing discount with local logic fallback.")
-        # Local exact calculation fallback following the same loyalty rules
-        earn_rates = {"standard": 1, "device": 2, "fresh": 5}
+        logger.warning(f"Code Interpreter execution failed ({e}), computing tier-only discount fallback.")
         tier_rates = {"Silver": 0.00, "Gold": 0.10, "Platinum": 0.15}
-        
-        max_points_discount = order_total * 0.50
-        max_usable_points = int(max_points_discount * 100)
-        points_to_redeem = min(int(loyalty_points), max_usable_points)
-        points_redeemed = (points_to_redeem // 500) * 500
-        points_discount = points_redeemed / 100.0
-        
-        subtotal_after_points = max(0.0, order_total - points_discount)
         tier_rate = tier_rates.get(tier, 0.0)
-        tier_discount = round(subtotal_after_points * tier_rate, 2)
-        
-        final_total = round(subtotal_after_points - tier_discount, 2)
-        total_savings = round(points_discount + tier_discount, 2)
-        earn_rate = earn_rates.get(product_category.lower(), 1)
-        points_earned = int(final_total * earn_rate)
-        remaining_points = int(loyalty_points) - points_redeemed + points_earned
-        
+        tier_discount = round(order_total * tier_rate, 2)
         return json.dumps({
-            "order_total": order_total,
-            "points_redeemed": points_redeemed,
-            "points_discount_usd": points_discount,
-            "tier": tier,
-            "tier_discount_percent": int(tier_rate * 100),
-            "tier_discount_pct": int(tier_rate * 100),
-            "tier_discount_usd": tier_discount,
-            "total_savings_usd": total_savings,
-            "final_total_usd": final_total,
-            "final_total": final_total,
-            "points_earned": points_earned,
-            "remaining_points": remaining_points,
-            "note": "Exact loyalty calculation applied."
+            "tier_discount": tier_discount
         })
 
 
