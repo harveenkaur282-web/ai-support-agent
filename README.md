@@ -10,6 +10,12 @@ The agent serves as an intelligent interface between customers and an e-commerce
 
 ---
 
+## System Architecture
+
+![AWS Cloud Architecture Diagram](docs/architecture_diagram.png)
+
+---
+
 ## rubric requirements
 
 | Deliverable | Location | Notes |
