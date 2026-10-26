@@ -36,6 +36,8 @@
   <rect x="690" y="440" width="850" height="150" rx="6" fill="#f2fbf4" stroke="#3f8624" stroke-width="1.5" stroke-dasharray="6 4"/>
   <text x="705" y="462" class="grp" fill="#3f8624">Retrieval-Augmented Generation (RAG)</text>
 
+  <rect x="690" y="602" width="850" height="148" rx="6" fill="#fbf7ff" stroke="#8c4fff" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="705" y="624" class="grp" fill="#8c4fff">AgentCore Memory — 2 long-term strategies</text>
   <g id="edges"></g>
   <g id="nodes"></g>
 </svg>
@@ -72,6 +74,8 @@ const os=node(1070,510,COL.db,"img:opensearch","OpenSearch Serverless","vector s
 const s3=node(1380,510,COL.storage,"img:s3","Amazon S3","product_catalog.txt");
 
 const mem=node(790,665,COL.db,"img:bedrock","AgentCore Memory","MemoryHook · facts + preferences");
+const st1=node(1070,665,COL.db,"img:bedrock","customer_facts","SEMANTIC · cs_agent/{actorId}/facts",64);
+const st2=node(1380,665,COL.db,"img:bedrock","customer_preferences","USER_PREFERENCE · cs_agent/{actorId}/preferences",64);
 const ci=node(790,795,COL.compute,"img:bedrock","AgentCore Code Interpreter","calculate_loyalty_discount");
 const br=node(790,925,COL.net,"img:bedrock","AgentCore Browser","managed Chrome (Playwright)",56);
 const web=node(1070,925,COL.user,"www","Live web page","udacity.com",56);
@@ -99,20 +103,22 @@ badge(kb.r+24,kb.cy-30,4);
 badge(mem.l-26,mem.cy-18,5);
 badge(ci.l-26,ci.cy-18,6);
 path(`M${br.r},${br.cy} L${web.l-4},${web.cy}`);
+path(`M${mem.r},${mem.cy} L${st1.l-4},${st1.cy}`);
+path(`M${mem.r},${mem.cy} L${st2.l-4},${st2.cy}`);
 badge(br.l-26,br.cy-18,7);
 
 // legend
 const legend=document.createElementNS(NS,"g");
-const L=["1  Customer sends prompt + customer_id + session_id to the runtime",
+const L=["1  Customer sends prompt + customer_id + session_id",
 "2  Agent (Strands) reasons with Amazon Nova and selects a tool",
-"3  Gateway (MCP) → API Gateway → Lambda (orders) / Lambda (refunds)",
-"4  Knowledge Base → OpenSearch Serverless over the S3 catalog (RAG)",
-"5  MemoryHook recalls context before and saves the turn after each reply",
-"6  Code Interpreter runs loyalty maths (tier-only fallback if unavailable)",
+"3  Gateway (MCP) → API Gateway → Lambda / Lambda",
+"4  Knowledge Base → OpenSearch over S3 catalog (RAG)",
+"5  MemoryHook: recall before, save after each turn",
+"6  Code Interpreter: loyalty maths (tier-only fallback)",
 "7  Browser tool reads live web pages"];
-legend.innerHTML=`<rect x="1130" y="620" width="410" height="250" rx="6" fill="#f7f8fa" stroke="#d5dbdb"/>
-<text x="1148" y="648" class="grp" fill="#232f3e">Request flow</text>`+
-L.map((t,i)=>`<text x="1148" y="${676+i*27}" font-size="12.5" fill="#232f3e">${t}</text>`).join("");
+legend.innerHTML=`<rect x="1170" y="775" width="370" height="205" rx="6" fill="#f7f8fa" stroke="#d5dbdb"/>
+<text x="1186" y="802" class="grp" fill="#232f3e">Request flow</text>`+
+L.map((t,i)=>`<text x="1186" y="${828+i*24}" font-size="12" fill="#232f3e">${t}</text>`).join("");
 document.getElementById("d").appendChild(legend);
 </script>
 </body>
