@@ -27,6 +27,11 @@ from strands.tools.mcp.mcp_client import MCPClient
 from mcp.client.streamable_http import streamable_http_client
 import argparse, json
 import os, asyncio, boto3
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:
+    pass
 from strands.hooks import (
     HookProvider, AfterInvocationEvent, HookRegistry, MessageAddedEvent,
 )
@@ -448,25 +453,62 @@ async def invoke(payload, context=None):
 
     try:
         # 4. Connect to Gateway via MCPClient
-        client = MCPClient(
+        gateway_client = MCPClient(
             lambda: streamable_http_client(GATEWAY_URL),
             prefix="gateway",
         )
 
-        client.start()
-        gateway_tools = client.list_tools_sync()
-        tools.extend(gateway_tools)
+        try:
+            with gateway_client:
+                try:
+                    gateway_tools = gateway_client.list_tools_sync()
+                    tools.extend(gateway_tools)
 
-        # 5. Assemble Agent
-        agent = Agent(
-            model=model,
-            system_prompt=SYSTEM_PROMPT,
-            tools=tools,
-            hooks=[memory_hook],
-        )
+                    logger.info(
+                        "Gateway connected successfully. Loaded %d tools.",
+                        len(gateway_tools),
+                    )
 
-        # 6. Invoke Agent
-        result = await agent.invoke_async(user_input)
+                except TimeoutError:
+                    logger.exception("Gateway tool loading timed out")
+
+                except ConnectionError:
+                    logger.exception("Gateway connection failed")
+
+                except Exception as exc:
+                    logger.exception(
+                        "Gateway tool loading failed: %s", exc
+                    )
+
+                # 5. Assemble Agent
+                agent = Agent(
+                    model=model,
+                    system_prompt=SYSTEM_PROMPT,
+                    tools=tools,
+                    hooks=[memory_hook],
+                    state={
+                        "actor_id": actor_id,
+                        "session_id": session_id,
+                    },
+                )
+
+                # 6. Invoke Agent
+                result = await agent.invoke_async(user_input)
+
+        except (TimeoutError, ConnectionError, Exception) as exc:
+            logger.exception("Gateway connection or session failed: %s", exc)
+            # Resilient fallback: assemble agent with available tools if gateway fails
+            agent = Agent(
+                model=model,
+                system_prompt=SYSTEM_PROMPT,
+                tools=tools,
+                hooks=[memory_hook],
+                state={
+                    "actor_id": actor_id,
+                    "session_id": session_id,
+                },
+            )
+            result = await agent.invoke_async(user_input)
 
         # 7. Extract response text
         content = getattr(result, "content", None)
@@ -485,7 +527,7 @@ async def invoke(payload, context=None):
 
     except Exception as e:
         logger.error(f"Error during agent invocation: {e}", exc_info=True)
-        return f"An error occurred while processing your request: {e}"
+        return "I apologize, but I am currently unable to process your request due to a technical issue. Please try again later."
 
 
 
